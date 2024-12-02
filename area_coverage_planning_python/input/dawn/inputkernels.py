@@ -1,0 +1,24 @@
+BASE_URL = 'https://naif.jpl.nasa.gov/pub/naif/pds/data/dawn-m_a-spice-6-v1.0/dawnsp_1000/data'
+METAKR = [
+    BASE_URL + '/ck/dawn_fc_v3.bc',
+    BASE_URL + '/ck/dawn_sa_110926_111002.bc',
+    BASE_URL + '/ck/dawn_sc_110926_111002.bc',
+    BASE_URL + '/ck/dawn_vir_zero.bc',
+    BASE_URL + '/fk/dawn_ceres_v00.tf',
+    BASE_URL + '/fk/dawn_v15.tf',
+    BASE_URL + '/fk/dawn_vesta_v00.tf',
+    BASE_URL + '/ik/dawn_fc_v10.ti',
+    BASE_URL + '/ik/dawn_grand_v00.ti',
+    BASE_URL + '/ik/dawn_struct_v00.ti',
+    BASE_URL + '/ik/dawn_vir_v05.ti',
+    BASE_URL + '/lsk/naif0012.tls',
+    BASE_URL + '/pck/dawn_ceres_v06.tpc',
+    BASE_URL + '/pck/dawn_vesta_v06.tpc',
+    BASE_URL + '/pck/pck00010.tpc',
+    BASE_URL + '/sclk/dawn_203_sclkscet_00091.tsc',
+    BASE_URL + '/spk/dawn_rec_110928_111102_120615_v1.bsp',
+    BASE_URL + '/spk/dawn_ssd_110713_120725_v01.bsp',
+    BASE_URL + '/spk/dawn_struct_v1.bsp',
+    BASE_URL + '/spk/de432s.bsp',
+    BASE_URL + '/spk/sb_vesta_ssd_120716.bsp'
+]

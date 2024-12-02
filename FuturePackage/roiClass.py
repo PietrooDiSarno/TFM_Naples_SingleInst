@@ -4,6 +4,7 @@ import numpy as np
 import PSOA as psoa
 import spiceypy as spice
 from pySPICElib.roiDatabase import roi
+from area_coverage_planning_python.mosaic_algorithms.paper.precomputation_JUICE.main_onlineFrontier_precompute import mosaicOnlineFrontier
 
 class oPlanRoi(roi):
     def __init__(self, body, name, vertices):
@@ -32,22 +33,27 @@ class oPlanRoi(roi):
             et_list.append(t)
         return et_list
 
-    def computeObservationData(self, instrument, observer):
+    def computeObservationData(self, instrument, observer, mosaic = False):
         tw_ObsLengths = []
         tw_NImgs = []
         tw_res = []
-        for compliantInterval in self.ROI_ObsET:
+
+        for int, compliantInterval in enumerate(self.ROI_ObsET):
             nimg = []
             time = []
             res = []
-            for i, et in enumerate(compliantInterval):
-                r = psoa.pointres(instrument.ifov, self.centroid, et, self.body, observer)  # km/pix
-                if np.isnan(r):
-                    return np.nan, np.nan
-                areaCov = (r * instrument.npix) ** 2
-                nimg.append(math.ceil((self.area / areaCov) * (1 + instrument.safetyFactor / 100)))
-                time.append(nimg[i] * instrument.imageRate)
-                res.append(r)
+            if mosaic:
+                time, nimg, res =  mosaicOnlineFrontier(compliantInterval, 'JANUS', observer, self, instrument, int + 1)
+            else:
+                for i, et in enumerate(compliantInterval):
+                    r = psoa.pointres(instrument.ifov, self.centroid, et, self.body, observer)  # km/pix
+                    if np.isnan(r):
+                        return np.nan, np.nan
+                    areaCov = (r * instrument.npix) ** 2
+                    nimg.append(math.ceil((self.area / areaCov) * (1 + instrument.safetyFactor / 100)))
+                    time.append(nimg[i] * instrument.imageRate)
+                    res.append(r)
+
             tw_ObsLengths.append(np.array(time))
             tw_NImgs.append(np.array(nimg))
             tw_res.append(np.array(res))
