@@ -24,7 +24,7 @@ def mosaicOnlineFrontier(timeint, inst, sc, ROIob, instrument, int):
     roiname = ROIob.name
     roi = ROIob.vertices
     target = ROIob.body
-    stoptime = timeint[-1]
+    stoptime = timeint[-1] + 3600
 
     tcadence = 8.5  # [s] between observations
     olapx = 20  # [%] of overlap in x direction

@@ -270,7 +270,7 @@ roinames = DB.getnames()
 
 c = []
 ### Start of subprocesses
-for i, roiname in enumerate(roinames[0:2]):
+for i, roiname in enumerate(roinames[1:3]):
     #if i == 104 or i == 12: continue #Smth wrong with these ones (maybe end-of-the-world Ganymede rois)
     c.append([sys.executable, 'checkOneROI.py'] + [roiname])
 

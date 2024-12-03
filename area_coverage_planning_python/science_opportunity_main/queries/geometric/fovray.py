@@ -25,7 +25,7 @@ def fovray(inst, target, obs, et, lon, lat, *varargin):
 
         # If point is visible, let's check if it is inside the FOV limits
         # Retrieve FOV parameters
-        _, _, _, bounds = mat2py_getfov(mat2py_bodn2c(inst),4)  # instrument FOV's boundary vectors in the
+        _, _, _, bounds = mat2py_getfov(mat2py_bodn2c(inst)[0],4)  # instrument FOV's boundary vectors in the
         # instrument frame
         # Get min-max FOV boundaries in the focal plane
         maxx = np.max(bounds[0, :])
@@ -33,7 +33,7 @@ def fovray(inst, target, obs, et, lon, lat, *varargin):
         maxy = np.max(bounds[1, :])
         miny = np.min(bounds[1, :])
 
-        if minx <= instpoint[0] <= maxx and miny <= instpoint[1] <= maxy:
+        if minx <= instpoint[0][0] <= maxx and miny <= instpoint[0][1] <= maxy:
             # Point is visible and in FOV
             visible = True
         else:
