@@ -1,0 +1,13 @@
+# Imported python packages
+geopy
+matplotlib
+numpy
+scipy
+shapely
+spiceypy
+
+# External modules
+pySPICElib @ git+https://github.com/ManelSoria/pySPICElib.git
+
+# External modules
+pySPICElib @ git+https://github.com/ManelSoria/pySPICElib.git
