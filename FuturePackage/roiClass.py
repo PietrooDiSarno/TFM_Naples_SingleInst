@@ -15,11 +15,11 @@ class oPlanRoi(roi):
         self.ROI_ObsImg = None
         self.ROI_ObsRes = None
 
-    def initializeObservationDataBase(self, roitw, instrument=None, observer= None, timeData = None, nImg = None, res = None):
+    def initializeObservationDataBase(self, roitw, instrument=None, observer= None, timeData = None, nImg = None, res = None, mosaic = False):
         self.ROI_TW = roitw  # Compliant TW for a ROI within the mission TW, given certain constraints
         self.ROI_ObsET = self.computeObservationET()
         if timeData is None and nImg is None and res is None:
-            timeData, nImg, res = self.computeObservationData(instrument, observer)
+            timeData, nImg, res = self.computeObservationData(instrument, observer, mosaic)
         self.ROI_ObsLen = timeData
         self.ROI_ObsImg = nImg
         self.ROI_ObsRes = res
@@ -29,7 +29,7 @@ class oPlanRoi(roi):
         compliantIntervals = spice.wncard(self.ROI_TW)
         for i in range(compliantIntervals):
             twBegin, twEnd = spice.wnfetd(self.ROI_TW, i)
-            t = np.linspace(twBegin, twEnd, num=1000, endpoint=True)
+            t = np.linspace(twBegin, twEnd, num=5, endpoint=True)
             et_list.append(t)
         return et_list
 
@@ -43,7 +43,7 @@ class oPlanRoi(roi):
             time = []
             res = []
             if mosaic:
-                time, nimg, res =  mosaicOnlineFrontier(compliantInterval, 'JANUS', observer, self, instrument, int + 1)
+                time, nimg, res =  mosaicOnlineFrontier(compliantInterval, 'JUICE_JANUS', observer, self, instrument, int + 1)
             else:
                 for i, et in enumerate(compliantInterval):
                     r = psoa.pointres(instrument.ifov, self.centroid, et, self.body, observer)  # km/pix

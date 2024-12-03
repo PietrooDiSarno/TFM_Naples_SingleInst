@@ -3,7 +3,7 @@ import sys
 
 from pySPICElib.kernelFetch import kernelFetch
 
-from FuturePackage import ROIDataBase
+from FuturePackage.roiDataBase import ROIDataBase
 
 import subprocess
 import pickle
@@ -270,9 +270,43 @@ roinames = DB.getnames()
 
 c = []
 ### Start of subprocesses
-for i, roiname in enumerate(roinames):
+for i, roiname in enumerate(roinames[0:2]):
     #if i == 104 or i == 12: continue #Smth wrong with these ones (maybe end-of-the-world Ganymede rois)
     c.append([sys.executable, 'checkOneROI.py'] + [roiname])
 
 proc = []  # list of p
 finished = []  # finished procs
+
+# spawn all procs
+for cmd in c:
+    proc.append(subprocess.Popen(cmd))
+    finished.append(0)
+# wait for completion
+nf = 0  # number of finished processes
+while True:
+    for a in range(0, len(proc)):
+        ret = proc[a].poll()
+        if ret is not None and finished[a] == 0:
+            finished[a] = 1
+            nf = nf + 1
+            print('** command', c[a], 'finished ', ret, 'nf=', nf, 'of ', len(proc))
+    if nf == len(proc):
+        print('** all finished')
+        break
+
+roiList = []
+for name in roinames:
+    patron = f"pickle_{name}.cfg"
+    for file in os.listdir("../../../data/roi_files"):
+        if file == patron:
+            with open('../../../data/roi_files/pickle_' + name + '.cfg', "rb") as f:
+                s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
+                tw = stypes.SPICEDOUBLE_CELL(2000)
+                for i in range(len(s)):
+                    spice.wninsd(s[i], e[i], tw)
+                    for j in range(len(rois)):
+                        if rois[j].name == name:
+                            rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes)
+                            continue
+
+

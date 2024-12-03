@@ -1,6 +1,6 @@
-from mosaic_algorithms.auxiliar_functions.multiprocess.dataHandling import dataHandling
-from mosaic_algorithms.online_frontier_repair.frontierRepair import frontierRepair
-from mosaic_algorithms.auxiliar_functions.spacecraft_operation.computeResMosaic import computeResMosaic
+from area_coverage_planning_python.mosaic_algorithms.auxiliar_functions.multiprocess.dataHandling import dataHandling
+from area_coverage_planning_python.mosaic_algorithms.online_frontier_repair.frontierRepair import frontierRepair
+from area_coverage_planning_python.mosaic_algorithms.auxiliar_functions.spacecraft_operation.computeResMosaic import computeResMosaic
 def mosaicOnlineFrontier(timeint, inst, sc, ROIob, instrument, int):
 
     # Revision of grid discretization:

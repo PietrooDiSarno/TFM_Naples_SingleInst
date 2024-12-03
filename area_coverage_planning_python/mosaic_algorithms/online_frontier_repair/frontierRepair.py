@@ -5,7 +5,6 @@ from shapely.geometry import MultiPolygon, Polygon
 from conversion_functions import mat2py_et2utc
 from mosaic_algorithms.auxiliar_functions.polygon_functions.visibleroi import visibleroi
 from mosaic_algorithms.auxiliar_functions.polygon_functions.interppolygon import interppolygon
-from mosaic_algorithms.paper.figure3.input_data_fig3 import stoptime
 from mosaic_algorithms.sidewinder.planSidewinderTour import planSidewinderTour
 from mosaic_algorithms.auxiliar_functions.spacecraft_operation.footprint import footprint
 from mosaic_algorithms.auxiliar_functions.spacecraft_operation.processObservation import processObservation

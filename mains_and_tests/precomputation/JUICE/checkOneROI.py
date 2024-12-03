@@ -21,7 +21,7 @@ if len(sys.argv) != 2:
 else:
     roiname = sys.argv[1]
 
-target_body = "CALLISTO"  # Can be a list of strings or a single string
+target_body = "GANYMEDE"  # Can be a list of strings or a single string
 
 if target_body == "GANYMEDE":
     METAKR = ['https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crema_5_1_150lb_23_1_default_v01.bc',
@@ -261,9 +261,9 @@ kf.ffList(urlKernelL=METAKR, forceDownload=False)
 
 
 if target_body == "GANYMEDE":
-    ROIs_filename = "data/roi_info/ganymede_roi_info.txt"  # Can be a list of strings or a single string
+    ROIs_filename = "../../../data/roi_info/ganymede_roi_info.txt"  # Can be a list of strings or a single string
 else:
-    ROIs_filename = "data/roi_info/callisto_roi_info.txt"  # Can be a list of strings or a single string
+    ROIs_filename = "../../../data/roi_info/callisto_roi_info.txt"  # Can be a list of strings or a single string
 
 target_radii = spice.bodvrd(target_body, "RADII", 3)[1][1] # [km]
 
@@ -278,13 +278,13 @@ roi = DB.getROIs(roiname)
 
 observer = 'JUICE'
 
-flybys_ganymede =[["2033 NOV 26 18:22:11", "2033 NOV 27 18:22:11"],
-                 ["2034 JAN 14 06:38:51", "2034 JAN 15 06:38:51"],
-                 ["2034 JUN 05 18:53:51", "2034 JUN 06 18:53:51"],
-                 ["2034 JUL 11 19:50:31", "2034 JUL 12 19:50:31"],
-                 ["2034 SEP 07 06:03:51", "2034 SEP 08 06:03:51"],
-                 ["2034 SEP 28 18:48:51", "2034 SEP 29 18:48:51"],
-                 ["2034 NOV 18 09:58:51", "2034 NOV 19 09:58:51"]]
+flybys_ganymede =[#["2033 NOV 26 18:22:11", "2033 NOV 27 18:22:11"],
+                 #["2034 JAN 14 06:38:51", "2034 JAN 15 06:38:51"],
+                 #["2034 JUN 05 18:53:51", "2034 JUN 06 18:53:51"],
+                 ["2034 JUL 11 19:50:31", "2034 JUL 12 19:50:31"]]
+                 #["2034 SEP 07 06:03:51", "2034 SEP 08 06:03:51"],
+                 #["2034 SEP 28 18:48:51", "2034 SEP 29 18:48:51"],
+                 #["2034 NOV 18 09:58:51", "2034 NOV 19 09:58:51"]]
 
 flybys_callisto = [["2033 JAN 13 13:32:12", "2033 JAN 14 13:32:12"],
                    ["2032 SEP 27 04:26:36", "2032 SEP 28 04:26:36"],
@@ -338,10 +338,10 @@ for i in range(len(roi)):
             # print(end - start)
             if end - start >= 10 * 60:
                 tws = spice.wnunid(r, tws)
-    roi[i].initializeObservationDataBase(tws, instrument, observer)  # FUERA DEL BUCLE?
+    roi[i].initializeObservationDataBase(tws, instrument, observer, mosaic = True)  # FUERA DEL BUCLE?
 
     if roi[i].ROI_ObsET:
-        with open(os.path.join('data/roi_files_case2/', 'pickle_' + roi[i].name + '.cfg'), "wb") as f:
+        with open(os.path.join('../../../data/roi_files/', 'pickle_' + roi[i].name + '.cfg'), "wb") as f:
             b = []
             e = []
             for interval in range(spice.wncard(roi[i].ROI_TW)):
@@ -357,7 +357,7 @@ for i in range(len(roi)):
             fbstart = spice.utc2et(fb[0])
             fbend = spice.utc2et(fb[1])
             if et0 >= fbstart and et1 <= fbend:
-                outfile = os.path.join('data/roi_files_case2/', 'output_' + roi[i].name + '_fb' + str(num) + '.txt')
+                outfile = os.path.join('../../../data/roi_files/', 'output_' + roi[i].name + '_fb' + str(num) + '.txt')
                 minRes = min(roi[i].ROI_ObsRes[j])
                 k = np.where(roi[i].ROI_ObsRes[j] == minRes)
                 minET = roi[i].ROI_ObsET[j][k]
@@ -366,12 +366,12 @@ for i in range(len(roi)):
                 stdout_fd = open(outfile, 'w')
                 sys.stdout = stdout_fd
                 print('name =' + roi[i].name)
-                print('flyby = ', flybys[num])
-                print('Observation TW = ', roi[i].ROI_TW)
-                print('Res(t) = ', roi[i].ROI_ObsRes[j])
-                print('t = ', roi[i].ROI_ObsET[j])
+                print('flyby =', flybys[num])
+                print('Observation TW =', roi[i].ROI_TW)
+                print('Res(t) =', roi[i].ROI_ObsRes[j])
+                print('t =', roi[i].ROI_ObsET[j])
                 print('minRes =', minRes)
-                print('minResTime = ', minET)
+                print('minResTime =', minET)
                 stdout_fd.flush()
                 stdout_fd.close()
                 sys.stdout = original_stdout

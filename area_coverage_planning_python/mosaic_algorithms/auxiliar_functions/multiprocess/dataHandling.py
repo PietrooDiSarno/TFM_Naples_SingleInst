@@ -1,13 +1,11 @@
 import glob
 import os
-from turtledemo.penrose import start
 
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
-from scipy.special import linestyle
 
-from conversion_functions import mat2py_et2utc
+from area_coverage_planning_python.conversion_functions import mat2py_et2utc
 
 
 class dataHandling:

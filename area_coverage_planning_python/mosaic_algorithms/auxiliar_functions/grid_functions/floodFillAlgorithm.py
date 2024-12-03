@@ -3,7 +3,6 @@ import copy
 import numpy as np
 from shapely.geometry import MultiPolygon, Polygon, Point
 
-from mosaic_algorithms.paper.figure3.input_data_fig3 import target
 
 
 def floodFillAlgorithm(w, h, olapx, olapy, gamma, targetArea, perimeterArea, gridPoints_, vPoints_, method):
