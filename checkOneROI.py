@@ -336,7 +336,7 @@ for i in range(len(roi)):
         for interval in range(spice.wncard(r)):
             start, end = spice.wnfetd(r, interval)
             # print(end - start)
-            if end - start >= 10 * 60:  ###################### Preguntar por qué 10 mins
+            if end - start >= 10 * 60:
                 tws = spice.wnunid(r, tws)
     roi[i].initializeObservationDataBase(tws, instrument, observer)  # FUERA DEL BUCLE?
 
