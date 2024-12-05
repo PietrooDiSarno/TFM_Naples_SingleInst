@@ -55,7 +55,7 @@ class dataHandling:
         fig, ax1 = plt.subplots()
         ax1.set_xlabel('Initial observation instant')
         ax1.set_ylabel('Observation make-span [s]', color='tab:blue')
-        ax1.plot(visible, makespan_, 'o', color='b', linestyle='none', markersize=2)
+        ax1.plot(visible, makespan_, 'o', color='b', linestyle='none', markersize=0.75)
         ax1.plot(not_visible, np.zeros(len(not_visible)), 'o', color='r', linestyle='none', markersize=0.75)
         ax1.tick_params(axis='y', labelcolor='tab:blue')
         ax2 = ax1.twinx()
