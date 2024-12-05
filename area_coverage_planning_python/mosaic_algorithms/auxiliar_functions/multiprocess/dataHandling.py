@@ -1,11 +1,11 @@
 import glob
 import os
-
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-from area_coverage_planning_python.conversion_functions import mat2py_et2utc
+
+from conversion_functions import mat2py_et2utc
 
 
 class dataHandling:
@@ -56,18 +56,18 @@ class dataHandling:
         ax1.set_xlabel('Initial observation instant')
         ax1.set_ylabel('Observation make-span [s]', color='tab:blue')
         ax1.plot(visible, makespan_, 'o', color='b', linestyle='none', markersize=2)
-        ax1.plot(not_visible, np.zeros(len(not_visible)), 'o', color='r', linestyle='none', markersize=2)
+        ax1.plot(not_visible, np.zeros(len(not_visible)), 'o', color='r', linestyle='none', markersize=0.75)
         ax1.tick_params(axis='y', labelcolor='tab:blue')
         ax2 = ax1.twinx()
         ax2.set_ylabel('Number of images', color='tab:orange')
-        ax2.plot(visible, nImg_, 'o', color='tab:orange', linestyle = 'none', markersize = 2)
+        ax2.plot(visible, nImg_, 'o', color='tab:orange', linestyle = 'none', markersize = 0.75)
         ax2.tick_params(axis='y', labelcolor='tab:orange')
-        fig.suptitle(f"Makespan and number of images for the {ROIname} ROI, compliant interval number {int}")
+        fig.suptitle(f"Makespan and number of images for the {ROIname} ROI. Compliant interval number {int}")
         ax1.set_xticks(np.linspace(start_times[0],start_times[-1],num=6),
                    mat2py_et2utc(np.linspace(start_times[0],start_times[-1],num=6),'C',0), rotation=15)
         fig.tight_layout()
         plt.subplots_adjust(left=0.1, right=0.9, bottom=0.20, top=0.92)
-        plt.savefig(fname, format="tiff")
+        plt.savefig(fname, format="tiff", bbox_inches = "tight")
         print(f"Plot saved as {self.getName(mosaic, ROIname, len(start_times), int) + '.tif'}")
 
     def saveValues(self, mosaic, ROIname, start_times, makespan, nImg, int):
