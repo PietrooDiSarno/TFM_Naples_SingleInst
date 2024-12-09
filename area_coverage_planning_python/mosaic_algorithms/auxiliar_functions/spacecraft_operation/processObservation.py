@@ -63,7 +63,7 @@ def processObservation(A, tour, fpList, poly1, t, slewRate, tobs, amIntercept, i
     tour.pop(0) #delete this observation from the planned tour
     empty = False
 
-    # Check an.m. intercept...
+    # Check a.m. intercept...
     if a[0] > 180:
         a[0] -= 360
 

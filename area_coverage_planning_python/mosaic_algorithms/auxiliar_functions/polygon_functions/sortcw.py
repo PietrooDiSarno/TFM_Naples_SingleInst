@@ -55,9 +55,13 @@ def sortcw(*args):
         else:
             polygon = Polygon((list(zip(x,y))))
 
-        polygon = polygon.buffer(0)
 
-        cx = polygon.centroid.x
+        polygon = polygon.buffer(0)
+        try:
+            cx = polygon.centroid.x
+        except:
+            print('error')
+
         cy = polygon.centroid.y # polygon centroid
 
 

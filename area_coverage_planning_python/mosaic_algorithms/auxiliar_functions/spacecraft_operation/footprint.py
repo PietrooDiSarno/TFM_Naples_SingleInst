@@ -488,7 +488,7 @@ def footprint(t, inst, sc, target, res, *args):
                             poly1 = poly1.buffer(0)
 
                             if isinstance(poly1, Polygon):
-                                lblon, lblat = np.array(poly1.exterior.coords)
+                                lblon, lblat = np.array(poly1.exterior.coords.xy)
                             elif isinstance(poly1, MultiPolygon):
                                 for i in range(len(poly1.geoms)):
                                     lblonaux, lblataux = np.array(poly1.geoms[i].exterior.coords.xy)

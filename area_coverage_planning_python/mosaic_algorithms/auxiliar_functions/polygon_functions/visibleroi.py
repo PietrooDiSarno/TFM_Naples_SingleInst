@@ -149,7 +149,7 @@ def visibleroi(roi_, et, target, obs):
                     poly1 = poly1.buffer(0)
 
                     if isinstance(poly1, Polygon):
-                        lblon, lblat = np.array(poly1.exterior.coords)
+                        lblon, lblat = np.array(poly1.exterior.coords.xy)
                     elif isinstance(poly1, MultiPolygon):
                         for i in range(len(poly1.geoms)):
                             lblonaux, lblataux = np.array(poly1.geoms[i].exterior.coords.xy)
@@ -214,6 +214,7 @@ def visibleroi(roi_, et, target, obs):
     poly2 = poly2.buffer(0)
 
     inter = poly1.intersection(poly2)
+    inter = inter.buffer(0)
 
     # output visible roi
     if isinstance(inter, Polygon):
@@ -228,7 +229,7 @@ def visibleroi(roi_, et, target, obs):
 
     # visibility flag
     if vroi.size == 0:
-         flag = True
+        flag = True
 
     return vroi, inter, flag
 

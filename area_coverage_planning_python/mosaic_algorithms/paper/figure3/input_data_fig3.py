@@ -1,7 +1,7 @@
 import numpy as np
 from conversion_functions import *
 from shapely.geometry import Polygon
-from pySPICElib import *
+from pySPICElib.kernelFetch import kernelFetch
 
 # Mosaic comparison between the different heuristics
 
@@ -99,10 +99,9 @@ polygon = Polygon(roi)
 cx, cy = polygon.centroid.x, polygon.centroid.y
 roistruct[count - 1]['cpoint'] = np.array([cx, cy])
 roistruct[count - 1]['name'] = "Niamh"
-roistruct[count - 1]['inittime'] = mat2py_str2et('1998 MAR 29 13:00:00.000 TDB')
-#roistruct[count - 1]['inittime'] = mat2py_str2et('1998 MAR 29 13:29:00.000 TDB')
+roistruct[count - 1]['inittime'] = mat2py_str2et('1998 MAR 29 13:29:00.000 TDB')
 """
-#"""
+"""
 # Cilix crater [lon, lat] = [180, 0]º
 count += 1
 roi = np.array([
@@ -117,7 +116,7 @@ cx, cy = polygon.centroid.x, polygon.centroid.y
 roistruct[count - 1]['cpoint'] = np.array([cx, cy])
 roistruct[count - 1]['name'] = "Cilix Crater"
 roistruct[count - 1]['inittime'] = mat2py_str2et('1998 MAR 29 13:40:00.000 TDB')  # closest approach
-#"""
+"""
 """
 # Tara Regio
 count += 1

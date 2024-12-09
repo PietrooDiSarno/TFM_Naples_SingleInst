@@ -47,7 +47,7 @@ def closestSide(gt1, gt2, targetArea, angle):
         poly_aux = MultiPolygon(polygon_list)
     else:
         poly_aux = Polygon((list(zip(targetArea[:, 0], targetArea[:, 1]))))
-    poly_aux = poly_aux.buffer(0)
+
     cx,cy = poly_aux.centroid.x, poly_aux.centroid.y
 
     roi = np.zeros((max(np.shape(targetArea)), 2))
@@ -61,9 +61,11 @@ def closestSide(gt1, gt2, targetArea, angle):
     # Subsequent position
     sclon_, sclat_ = np.dot(rotmat, ((np.array(gt2)).reshape(2,) - np.array([cx, cy]))) + np.array([cx, cy])
 
+    roiaux = roi[~np.isnan(roi).all(axis=1)]
+
     # Find the 4 boundary vertices of the rotated target area
-    maxlon, minlon = np.max(roi[:, 0]), np.min(roi[:, 0])
-    maxlat, minlat = np.max(roi[:, 1]), np.min(roi[:, 1])
+    maxlon, minlon = np.max(roiaux[:, 0]), np.min(roiaux[:, 0])
+    maxlat, minlat = np.max(roiaux[:, 1]), np.min(roiaux[:, 1])
 
     # ROI's boundary box
     xlimit = [minlon, maxlon]

@@ -42,7 +42,7 @@ def minimumWidthDirection(x_, y_):
         y = np.delete(y, ind)
 
     # Find centroid
-    poly_aux = Polygon(list(zip(x,y))).buffer(0)
+    poly_aux = Polygon(list(zip(x,y)))
     cx = poly_aux.centroid.x
     cy = poly_aux.centroid.y
 
