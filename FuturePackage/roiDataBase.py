@@ -61,7 +61,7 @@ class ROIDataBase:
         #if len(rois) == 1:
         #    return rois[0]
         #else:
-            return rois
+        return rois
     def getnames(self):
         names = []
         for roi in self._ROIs:

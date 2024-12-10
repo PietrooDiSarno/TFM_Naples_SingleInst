@@ -55,13 +55,27 @@ def sortcw(*args):
         else:
             polygon = Polygon((list(zip(x,y))))
 
-
         polygon = polygon.buffer(0)
-        try:
-            cx = polygon.centroid.x
-        except:
-            print('error')
 
+        if polygon.is_empty:
+            unique_points = list(set(list(zip(x, y))))
+            xuni, yuni = zip(*unique_points)
+            if (np.isnan(xuni)).any():
+                nanindex = np.where(np.isnan(xuni))[0]
+                polygon_list = []
+                for i in range(len(nanindex)):
+                    if i == 0:
+                        polygon_list.append(Polygon(list(zip(xuni[:nanindex[0]], yuni[:nanindex[0]]))))
+                    else:
+                        polygon_list.append(Polygon(
+                            list(zip(xuni[nanindex[i - 1] + 1:nanindex[i]], yuni[nanindex[i - 1] + 1:nanindex[i]]))))
+                if ~ np.isnan(xuni[-1]):
+                    polygon_list.append(Polygon(list(zip(xuni[nanindex[-1] + 1:], yuni[nanindex[-1] + 1:]))))
+                polygon = MultiPolygon(polygon_list)
+            else:
+                polygon = Polygon((list(zip(xuni, yuni))))
+
+        cx = polygon.centroid.x
         cy = polygon.centroid.y # polygon centroid
 
 
