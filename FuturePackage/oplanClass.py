@@ -80,15 +80,22 @@ class oplan():
     # in this case, averaged centroid res. in km/pix
 
     def evalResPlan(self):
-        for i in range(len(self.stol)):
-            ts = self.stol[i]
-            te = ts + self.obsLength[i]
-            et = np.linspace(ts, te, 4)
-            qv = []
-            for t in et:
-                qv.append(self.evalResRoi(i, t))
-            self.qroi[i] = sum(qv) / len(et)
+        roiL = DataManager.getInstance().getROIList()
 
+        if roiL[0].mosaic == False:
+            for i in range(len(self.stol)):
+                ts = self.stol[i]
+                te = ts + self.obsLength[i]
+                et = np.linspace(ts, te, 4)
+                qv = []
+                for t in et:
+                    qv.append(self.evalResRoi(i, t))
+                self.qroi[i] = sum(qv) / len(et)
+
+
+        else:
+            for i in range(len(self.stol)):
+                self.qroi[i] = self.evalResRoi(i, self.stol[i])
         return self.qroi
 
     def evalResRoi(self, i, et):  # returns instantaneous resolution (fitness) of roi (integer)

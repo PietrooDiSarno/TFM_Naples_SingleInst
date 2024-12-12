@@ -42,6 +42,6 @@ class DataManager:
     def initObservationDataBase(self, twL, i = None):
         if i is None: #i is the roi number, if None it is assumed that a sorted list containing the constrained TW for each roi is being passed. It must have the same order as the roiList
             for i, tw in enumerate(twL):
-                self.roiList[i].initializeObservationDataBase(tw, self.instrument, self.observer)
+                self.roiList[i].initializeObservationDataBase(tw, self.instrument, self.observer, mosaic = True)
         else:
-            self.roiList[i].initializeObservationDataBase(twL, self.instrument, self.observer)
+            self.roiList[i].initializeObservationDataBase(twL, self.instrument, self.observer, mosaic = True)

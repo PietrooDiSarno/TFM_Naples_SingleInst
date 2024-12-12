@@ -308,7 +308,7 @@ for name in roinames:
                     spice.wninsd(s[i], e[i], tw)
                     for j in range(len(rois)):
                         if rois[j].name == name:
-                            rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes)
+                            rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes, mosaic = True)
                             continue
 
 
