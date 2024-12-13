@@ -3,8 +3,6 @@ import sys
 from pySPICElib.kernelFetch import kernelFetch
 from FuturePackage.roiDataBase import ROIDataBase
 import subprocess
-import pickle
-import os
 from pySPICElib.SPICEtools import *
 
 if len(sys.argv) > 1:
