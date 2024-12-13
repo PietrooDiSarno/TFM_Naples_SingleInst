@@ -1,14 +1,14 @@
 import random
 import sys
-
 from pySPICElib.kernelFetch import kernelFetch
-
 from FuturePackage.roiDataBase import ROIDataBase
-
 import subprocess
 import pickle
 import os
 from pySPICElib.SPICEtools import *
+
+if len(sys.argv) > 1:
+    nAgents = input('Number of agents: ')
 
 #################################################################################################################
 np.random.seed(123)
@@ -268,47 +268,57 @@ DB = ROIDataBase(ROIs_filename, target_body)
 rois = DB.getROIs()
 roinames = DB.getnames()
 
-c = []
+n_ROIs = 50
+k = len(roinames) // n_ROIs
+i_start = np.array(range(k)) * n_ROIs
+i_end = np.array(range(1, k + 1)) * n_ROIs
+if i_end[-1] < len(roinames):
+      i_start = np.append(i_start, i_start[-1] + n_ROIs)
+      i_end = np.append(i_end, len(roinames))
+
 ### Start of subprocesses
-for i, roiname in enumerate(roinames[:20]):
-    #if i == 104 or i == 12: continue #Smth wrong with these ones (maybe end-of-the-world Ganymede rois)
-    c.append([sys.executable, 'checkOneROI.py'] + [roiname])
-#roiname = roinames[0]
-#c.append([sys.executable, 'checkOneROI.py'] + [roiname])
+for index in range(len(i_start)):
+      c = []
+      for i, roiname in enumerate(roinames[i_start[index]:i_end[index]]):
+          #if i == 104 or i == 12: continue #Smth wrong with these ones (maybe end-of-the-world Ganymede rois)
+          c.append([sys.executable, 'checkOneROI.py'] + [roiname])
+      #roiname = roinames[0]
+      #c.append([sys.executable, 'checkOneROI.py'] + [roiname])
 
-proc = []  # list of p
-finished = []  # finished procs
+      proc = []  # list of p
+      finished = []  # finished procs
 
-# spawn all procs
-for cmd in c:
-    proc.append(subprocess.Popen(cmd))
-    finished.append(0)
-# wait for completion
-nf = 0  # number of finished processes
-while True:
-    for a in range(0, len(proc)):
-        ret = proc[a].poll()
-        if ret is not None and finished[a] == 0:
-            finished[a] = 1
-            nf = nf + 1
-            print('** command', c[a], 'finished ', ret, 'nf=', nf, 'of ', len(proc))
-    if nf == len(proc):
-        print('** all finished')
-        break
+      # spawn all procs
+      for cmd in c:
+          proc.append(subprocess.Popen(cmd))
+          finished.append(0)
+      # wait for completion
+      nf = 0  # number of finished processes
+      while True:
+          for a in range(0, len(proc)):
+              ret = proc[a].poll()
+              if ret is not None and finished[a] == 0:
+                  finished[a] = 1
+                  nf = nf + 1
+                  print('** command', c[a], 'finished ', ret, 'nf=', nf, 'of ', len(proc))
+          if nf == len(proc):
+              print('** all finished')
+              break
 
-roiList = []
-for name in roinames:
-    patron = f"pickle_{name}.cfg"
-    for file in os.listdir("../../../data/roi_files"):
-        if file == patron:
-            with open('../../../data/roi_files/pickle_' + name + '.cfg', "rb") as f:
-                s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
-                tw = stypes.SPICEDOUBLE_CELL(2000)
-                for i in range(len(s)):
-                    spice.wninsd(s[i], e[i], tw)
-                    for j in range(len(rois)):
-                        if rois[j].name == name:
-                            rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes, mosaic = True)
-                            continue
-
+      """
+      roiList = []
+      for name in roinames[i_start[index]:i_end[index]]:
+          patron = f"pickle_{name}.cfg"
+          for file in os.listdir("../../../data/roi_files"):
+              if file == patron:
+                  with open('../../../data/roi_files/pickle_' + name + '.cfg', "rb") as f:
+                      s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
+                      tw = stypes.SPICEDOUBLE_CELL(2000)
+                      for i in range(len(s)):
+                          spice.wninsd(s[i], e[i], tw)
+                          for j in range(len(rois)):
+                              if rois[j].name == name:
+                                  rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes, mosaic = True)
+                                  continue
+      """
 
