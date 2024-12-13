@@ -1,3 +1,4 @@
+import copy
 import random
 import sys
 from pySPICElib.kernelFetch import kernelFetch
@@ -266,7 +267,7 @@ DB = ROIDataBase(ROIs_filename, target_body)
 rois = DB.getROIs()
 roinames = DB.getnames()
 
-n_ROIs = 10
+n_ROIs = copy.deepcopy(nAgents)
 k = len(roinames) // n_ROIs
 i_start = np.array(range(k)) * n_ROIs
 i_end = np.array(range(1, k + 1)) * n_ROIs
