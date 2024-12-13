@@ -338,7 +338,7 @@ for i in range(len(roi)):
             # print(end - start)
             if end - start >= 10 * 60:
                 tws = spice.wnunid(r, tws)
-    roi[i].initializeObservationDataBase(tws, instrument, observer, mosaic = True)  # FUERA DEL BUCLE?
+    roi[i].initializeObservationDataBase(tws, instrument, observer, mosaic = True)
 
     if roi[i].ROI_ObsET:
         with open(os.path.join('../../../data/roi_files/', 'pickle_' + roi[i].name + '.cfg'), "wb") as f:

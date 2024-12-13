@@ -138,4 +138,3 @@ JUICE_ROI_GAN_7_0_06,Melotte Regio,[ 5.  5. 14. 14.],[ 92. 102. 102.  92.]
 JUICE_ROI_GAN_7_0_07,Galileo Regio,[30. 30. 45. 45.],[185. 200. 200. 185.]
 JUICE_ROI_GAN_7_0_08,Nicholson Regio Ii,[-45. -45. -35. -35.],[310. 325. 325. 310.]
 JUICE_ROI_GAN_7_0_09,Marius Regio Ii,[-1. -1.  9.  9.],[161. 172. 172. 161.]
-

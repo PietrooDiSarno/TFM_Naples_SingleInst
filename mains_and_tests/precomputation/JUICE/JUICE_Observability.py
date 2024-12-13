@@ -266,7 +266,7 @@ DB = ROIDataBase(ROIs_filename, target_body)
 rois = DB.getROIs()
 roinames = DB.getnames()
 
-n_ROIs = 50
+n_ROIs = 10
 k = len(roinames) // n_ROIs
 i_start = np.array(range(k)) * n_ROIs
 i_end = np.array(range(1, k + 1)) * n_ROIs
