@@ -315,9 +315,9 @@ for index in range(len(i_start)):
                       tw = stypes.SPICEDOUBLE_CELL(2000)
                       for i in range(len(s)):
                           spice.wninsd(s[i], e[i], tw)
-                          for j in range(len(rois)):
-                              if rois[j].name == name:
-                                  rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes, mosaic = True)
-                                  continue
+                      for j in range(len(rois)):
+                        if rois[j].name == name:
+                              rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes, mosaic = True)
+                              continue
       """
 
