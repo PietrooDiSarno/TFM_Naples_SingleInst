@@ -6,7 +6,7 @@ from FuturePackage.roiDataBase import ROIDataBase
 import subprocess
 from pySPICElib.SPICEtools import *
 
-if len(sys.argv) > 1:
+if len(sys.argv) < 2:
     nAgents = input('Number of agents: ')
 
 #################################################################################################################
@@ -267,7 +267,8 @@ DB = ROIDataBase(ROIs_filename, target_body)
 rois = DB.getROIs()
 roinames = DB.getnames()
 
-n_ROIs = copy.deepcopy(nAgents)
+
+n_ROIs = int(nAgents)
 k = len(roinames) // n_ROIs
 i_start = np.array(range(k)) * n_ROIs
 i_end = np.array(range(1, k + 1)) * n_ROIs

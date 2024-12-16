@@ -331,7 +331,7 @@ for i in range(len(roi)):
         q1 = [f[1], '<', 70.0]
         q2 = [f[2], '<', 75.]
         q = [q0, q1, q2]
-        r = spicetools.myTwFinderList(q, tw, step=120., maxntw=200, nite=20, xtolerance=0.1, ytolerance=0.1)
+        r = spicetools.myTwFinderList(q, tw, step=300., maxntw=200, nite=20, xtolerance=1.0, ytolerance=0.1)
         # print(r)
         for interval in range(spice.wncard(r)):
             start, end = spice.wnfetd(r, interval)
