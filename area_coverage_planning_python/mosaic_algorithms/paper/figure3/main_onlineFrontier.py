@@ -1,5 +1,4 @@
 import copy
-
 from mosaic_algorithms.online_frontier_repair.frontierRepair import frontierRepair
 from mosaic_algorithms.auxiliar_functions.plot.plotTour import plotTour
 from mosaic_algorithms.paper.figure3.input_data_fig3 import *  # Load mission info (kernels, SPICE ids, etc.)
@@ -22,7 +21,6 @@ module_name = f"mosaic_algorithms.paper.figure3.{name}"
 
 # Online Frontier
 A, fpList = frontierRepair(roistruct[0]['inittime'], stoptime, tcadence, inst, sc, target, roi, olapx, olapy, 3 * 1e-3)
-
 # Plot tour
 ax = plotTour(A, fpList, roistruct, sc, target)
 ax.set_title(roistruct[0]['name'], fontweight = 'bold', fontsize = 20)
