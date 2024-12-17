@@ -31,7 +31,7 @@ class oPlanRoi(roi):
         compliantIntervals = spice.wncard(self.ROI_TW)
         for i in range(compliantIntervals):
             twBegin, twEnd = spice.wnfetd(self.ROI_TW, i)
-            t = np.linspace(twBegin, twEnd, num=5, endpoint=True)
+            t = np.linspace(twBegin, twEnd, num=1000, endpoint=True)
             et_list.append(t)
         return et_list
 
