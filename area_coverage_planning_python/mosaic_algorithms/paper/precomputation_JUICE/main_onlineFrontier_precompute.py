@@ -43,9 +43,5 @@ def mosaicOnlineFrontier(timeint, inst, sc, ROIob, instrument, int):
             nImg.append(None)
             resROI.append(None)
 
-    #dh.saveValues(mosaic, roiname, timeint, makespan, int)
-    #if saveplot:
-    #    dh.savePlots(mosaic, roiname, timeint, makespan, nImg, int)
 
-    # a,b,c,d = dh.getValues(mosaic, roiname, int)
-    return makespan, nImg, resROI
+    return makespan, nImg, resROI, cov
