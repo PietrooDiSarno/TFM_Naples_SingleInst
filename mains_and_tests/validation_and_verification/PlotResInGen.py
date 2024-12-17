@@ -1,15 +1,44 @@
-import matplotlib.pyplot as plt
+from PMOT.ooaga import aga
+from pySPICElib.kernelFetch import kernelFetch
+from pySPICElib.SPICEtools import *
+import spiceypy as spice
+from FuturePackage import Instrument
+from FuturePackage import ROIDataBase
+from FuturePackage import DataManager
+from FuturePackage import oplan
+import PMOT as pm
 import os
 import pickle
-import numpy as np
-from pySPICElib import etToAxisStrings
-from pySPICElib.kernelFetch import kernelFetch
 
-"""
-plot of the precomputed resolution in time for a given ROI
-"""
+class agaplot(aga):
+    def run(self, ng=10, goal=-1e7, maxFitEval=None):
+        print('AGA vanilla run') if self.options['info'] > 0 else None
+        re_eval = True
+        g_last = 0
+        self.printOptions() if self.options['info'] > 1 else None
+        bestFits = []
+        for g in range(0, ng):  # 1 generation is defined as: fitness evaluation + reproduction
+            self.evalFitnessAndSort()
+            self.mutateDegenerates(g)  # forces mutation of degenerates and reevaluates their fitness
+            bestFits.append(self.fit[0])
+            print('**** AGA run best', g, ' best fitness is ', self.fit[0]) if self.options['info'] > 1 else None
+            if self.getFitBest() <= goal:
+                print('**** AGA goal reached') if self.options['info'] > 0 else None
+                re_eval = False  # don't need to reevaluate
+                break
+            if maxFitEval is not None:
+                if self.sample.nfit >= maxFitEval:
+                    re_eval = False
+                    break
+            self.repopulate(g)
+            g_last = g + 1  # Update to next generation
+        if re_eval:  # we need to reevaluate if iterations are ended after re-population
+            self.evalFitnessAndSort()
+            bestFits.append(self.fit[0])
+            print('**** AGA run best END', ' best fitness is ', self.fit[0]) if self.options['info'] > 1 else None
 
-target_body = "GANYMEDE"  # Can be a list of strings or a single string
+        return self.pop[0], self.fit[0], self.popType[0], g_last, bestFits
+
 
 METAKR = ['https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crema_5_1_150lb_23_1_default_v01.bc',
           'https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crema_5_1_150lb_23_1_comms_v01.bc',
@@ -128,33 +157,79 @@ METAKR = ['https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crem
 
 kf = kernelFetch()
 kf.ffList(urlKernelL=METAKR, forceDownload=False)
+# INPUTS
 
+#   a) ROI INFO
+#   a.1) Raw data info
 ROIs_filename = "../../data/roi_info/ganymede_roi_info.txt"  # Can be a list of strings or a single string
+target_body = "GANYMEDE"  # Can be a list of strings or a single string
 
-# DB = ROIDataBase(ROIs_filename, target_body)
-# rois = DB.getROIs()
-# roinames = DB.getnames()
-roinames = ['JUICE_ROI_GAN_5_0_09']
+#   a.2) Should you want to create a custom ROI omit/add the above and do:
+# customROI = dict()
+# customROI['body'] = 'TARGET_BODY'
+# customROI['#roi_key'] = 'ROI_NAME/KEY'
+# customROI['vertices'] = np.array([['lon0', 'lat0'], ['lon1', 'lat1'], ['lon2', 'lat2'], ['lon3', 'lat3']])
+
+#   a.2) ROIs to be observed (input the roy key)
+desiredROIs = []  # To plan for all the ROIs on the raw datafiles either delete de variable or leave it as an empty list
+
+#   b) INSTRUMENT AND OBSERVER INFO
+observer = 'JUICE'  # Single string (only one observer per schedule)
+ifov = 15e-6  # [rad] single 'double' variable
+npix = 1735  # single 'int' variable
+imageRate = 0.1  # [ips] single 'int' variable
+fs = 20.  # single 'double' variable
+instrument = Instrument(ifov, npix, imageRate, fs)
+
+
+#########################################################################################################
+# SETUP
+DB = ROIDataBase(ROIs_filename, target_body)
+roinames = DB.getnames()  # or rois = [customROI1, customROI2...] List of rois as objects of class oPlanRoi. roiDataBase internally creates each instance of the oPlanRois for each desiredRoi
+rois = DB.getROIs()
+roiL = []
 for name in roinames:
     patron = f"pickle_{name}.cfg"
     for file in os.listdir("../../data/roi_files"):
         if file == patron:
             with open('../../data/roi_files/pickle_' + name + '.cfg', "rb") as f:
-                _, _, obsET, _, _, obsRes = pickle.load(f)
-                obsET = np.concatenate(obsET)
-                obsRes = np.concatenate(obsRes)
-                minRes = min(obsRes)
-                minET = obsET[np.argmin(obsRes)]
-                fig, ax = plt.subplots()
-                ax.plot(obsET, obsRes, '-', color = 'r', label = 'Resolution')
-                ax.plot(minET, minRes, marker = 'x', color = 'blue', markersize = 8, label = 'Minimum')
-                ax.set_xlabel('Initial observation instant')
-                ax.set_ylabel('Resolution [km/px]')
-                etv, ets = etToAxisStrings(obsET, 15, accurate=True)
-                ax.set_xticks(etv)
-                ax.set_xticklabels(ets, rotation=15)
-                ax.set_title('Resolution over ' + name)
-                ax.legend()
-                plt.show()
-                print(minRes)
+                s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
+                tw = stypes.SPICEDOUBLE_CELL(2000)
+                for i in range(len(s)):
+                    spice.wninsd(s[i], e[i], tw)
+                for j in range(len(rois)):
+                    if rois[j].name == name:
+                        rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes, mosaic = True)
+                        roiL.append(rois[j])
+                        continue
 
+DataManager(roiL, instrument, observer)
+#print(print_tw(rois[0].ROI_TW))
+#print(print_tw(rois[1].ROI_TW))
+
+plan1 = oplan()
+
+plan1.print_auxdata()
+
+plan1.ranFun()
+
+plan1.mutFun()
+
+
+myaga = agaplot(plan1, 100)
+myaga.setOption('ne', 5)
+myaga.setOption('cCanMutate', 20)
+myaga.setOption('nd', 0)
+myaga.setOption('nm', myaga.getPopSize() - 20)
+myaga.setOption('info', 1)
+
+bestI, bestF, type, g, bestFitList = myaga.run(20)
+
+fig, ax = plt.subplots()
+ax.plot(list(range(g + 1)), bestFitList, '.', color='r', linestyle = 'none', markersize = 3)
+ax.set_xticks(list(range(g + 1)))
+ax.set_xlabel('Generation')
+ax.set_ylabel('Best fitness [km/px]')
+ax.set_title('Fitness evolution')
+plt.show()
+print(bestF)

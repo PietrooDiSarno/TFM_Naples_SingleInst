@@ -102,7 +102,7 @@ class oplan():
         roiL = DataManager.getInstance().getROIList(self.subproblem[0], self.subproblem[1])
         observer = DataManager.getInstance().getObserver()
         instrument = DataManager.getInstance().getInstrumentData()
-        print(i)
+        #print(i)
         _, _, res = roiL[i].interpolateObservationData(et)
         return res  # pointres(instrument.ifov, roiL[i].centroid, et, roiL[i].body, observer)
 
