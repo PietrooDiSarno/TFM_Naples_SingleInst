@@ -1,10 +1,11 @@
-import pickle
-from FuturePackage.roiDataBase import ROIDataBase
-import spiceypy as spice
-from spiceypy import stypes
+import matplotlib.pyplot as plt
 import os
+import pickle
+import numpy as np
+from pySPICElib import etToAxisStrings
 from pySPICElib.kernelFetch import kernelFetch
-from mosaic_algorithms.auxiliar_functions.multiprocess.dataHandling import dataHandling
+
+target_body = "GANYMEDE"  # Can be a list of strings or a single string
 
 METAKR = ['https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crema_5_1_150lb_23_1_default_v01.bc',
           'https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crema_5_1_150lb_23_1_comms_v01.bc',
@@ -121,23 +122,30 @@ METAKR = ['https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crem
           'https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/spk/juice_orbc_000060_230414_310721_v01.bsp',
           'https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/spk/juice_orbm_000059_240817_240827_v01.bsp']
 
-target_body = ["GANYMEDE"]
 kf = kernelFetch()
 kf.ffList(urlKernelL=METAKR, forceDownload=False)
 
 ROIs_filename = "../../data/roi_info/ganymede_roi_info.txt"  # Can be a list of strings or a single string
 
-DB = ROIDataBase(ROIs_filename, target_body)
-rois = DB.getROIs()
-roinames = DB.getnames()
-DH = dataHandling()
+# DB = ROIDataBase(ROIs_filename, target_body)
+# rois = DB.getROIs()
+# roinames = DB.getnames()
+roinames = ['JUICE_ROI_GAN_5_0_09']
 for name in roinames:
     patron = f"pickle_{name}.cfg"
     for file in os.listdir("../../data/roi_files"):
         if file == patron:
             with open('../../data/roi_files/pickle_' + name + '.cfg', "rb") as f:
-                s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
-                for k in range(len(obsET)):
-                    DH.savePlots('onlinefrontier', name, obsET[k], obsLen[k], obsImg[k], k + 1)
-
+                _, _, obsET, _, _, obsRes = pickle.load(f)
+                obsET = np.concatenate(obsET)
+                obsRes = np.concatenate(obsRes)
+                fig, ax = plt.subplots()
+                ax.plot(obsET, obsRes, '-', color = 'r')
+                ax.set_xlabel('Initial observation instant')
+                ax.set_ylabel('Resolution [km/px]')
+                etv, ets = etToAxisStrings(obsET, 15, accurate=True)
+                ax.set_xticks(etv)
+                ax.set_xticklabels(ets, rotation=15)
+                ax.set_title('Resolution over ' + name)
+                plt.show()
 

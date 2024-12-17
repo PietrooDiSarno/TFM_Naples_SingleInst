@@ -170,7 +170,7 @@ for roi in rois:
      matplotlib.use('TkAgg')
      fig, ax1 = plt.subplots()
      plt.xlabel('Date')
-     plt.title("Emission angle and distance from the centroid of" + roi.name)
+     plt.title("Emission angle and distance from the centroid of " + roi.name)
      ax1.plot(etvec, angles, 'r', label='Emission angle [°]')
      ax2 = ax1.twinx()
      ax2.plot(etvec, distances, 'b', label='Distance [km]')
