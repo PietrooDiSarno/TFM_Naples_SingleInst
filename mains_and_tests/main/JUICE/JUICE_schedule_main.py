@@ -204,7 +204,7 @@ myaga.setOption('nd', 0)
 myaga.setOption('nm', myaga.getPopSize() - 20)
 myaga.setOption('info', 1)
 
-bestI, bestF, type, g = myaga.run(1)
+bestI, bestF, type, g = myaga.run(20)
 flybys = [["2033 NOV 26 18:22:11", "2033 NOV 27 18:22:11"],
           ["2034 JAN 14 06:38:51", "2034 JAN 15 06:38:51"],
           ["2034 JUN 05 18:53:51", "2034 JUN 06 18:53:51"],
