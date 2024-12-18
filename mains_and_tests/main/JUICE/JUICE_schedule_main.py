@@ -182,9 +182,11 @@ for name in roinames:
                         if obsCov:
                             rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes,
                                                                   cov=obsCov, mosaic=True)
+                            roiL.append(rois[j])
                             continue
                         else:
                             rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes)
+                            roiL.append(rois[j])
                             continue
 
 DataManager(roiL, instrument, observer)
@@ -193,7 +195,7 @@ DataManager(roiL, instrument, observer)
 
 plan1 = oplan()
 
-plan1.print_auxdata()
+#plan1.print_auxdata()
 
 plan1.ranFun()
 print(plan1.stol)
