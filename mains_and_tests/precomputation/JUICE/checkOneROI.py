@@ -348,7 +348,11 @@ for i in range(len(roi)):
                 begin, end = spice.wnfetd(roi[i].ROI_TW, interval)
                 b.append(begin)
                 e.append(end)
-            pickle.dump([b, e, roi[i].ROI_ObsET, roi[i].ROI_ObsLen, roi[i].ROI_ObsImg, roi[i].ROI_ObsRes], f)
+            if roi[i].mosaic:
+                pickle.dump([b, e, roi[i].ROI_ObsET, roi[i].ROI_ObsLen, roi[i].ROI_ObsImg, roi[i].ROI_ObsRes,
+                             roi[i].ROI_ObsCov], f)
+            else:
+                pickle.dump([b, e, roi[i].ROI_ObsET, roi[i].ROI_ObsLen, roi[i].ROI_ObsImg, roi[i].ROI_ObsRes], f)
             f.close()
 
     for j in range(spice.wncard(roi[i].ROI_TW)):
@@ -361,6 +365,10 @@ for i in range(len(roi)):
                 minRes = min(roi[i].ROI_ObsRes[j])
                 k = np.where(roi[i].ROI_ObsRes[j] == minRes)
                 minET = roi[i].ROI_ObsET[j][k]
+                if roi[i].mosaic:
+                    maxCov = max(roi[i].ROI_ObsCov[j])
+                    h = np.where(roi[i].ROI_ObsCov[j] == maxCov)
+                    maxET = roi[i].ROI_ObsET[j][h]
                 original_stdout = sys.stdout
 
                 stdout_fd = open(outfile, 'w')
@@ -372,6 +380,11 @@ for i in range(len(roi)):
                 print('t =', roi[i].ROI_ObsET[j])
                 print('minRes =', minRes)
                 print('minResTime =', minET)
+                if roi[i].mosaic:
+                    print('Cov(t) =', roi[i].ROI_ObsCov[j])
+                    print('maxCov =', maxCov)
+                    print('maxCovTime =', maxET)
+
                 stdout_fd.flush()
                 stdout_fd.close()
                 sys.stdout = original_stdout

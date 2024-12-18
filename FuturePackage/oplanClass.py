@@ -10,7 +10,8 @@ class oplan():
         self.subproblem = [substart, subend]
         roiL = DataManager.getInstance().getROIList(self.subproblem[0], self.subproblem[1])
         self.stol = [0.] * len(roiL)  # start time observation list
-        self.qroi = [0.] * len(roiL)  # cache for the fitness of each ROI observation
+        self.qroi = [0.] * len(roiL)  # cache for the resolution of each ROI observation
+        self.croi = [0.] * len(roiL)  # cache for the coverage of each ROI observation
         self.obsLength = [0.] * len(roiL)  # cache for the duration of the observation for each ROI
 
     def removeEmptyTW(self, unconstrainedTW):
@@ -73,7 +74,10 @@ class oplan():
 
     def getObsLength(self, roi, et):
         interval, _, _ = self.findIntervalInTw(et, roi.ROI_TW)
-        _, timeobs, _ = roi.interpolateObservationData(et, interval)
+        if roi.mosaic:
+            _, timeobs, _, _ = roi.interpolateObservationData(et, interval)
+        else:
+            _, timeobs, _ = roi.interpolateObservationData(et, interval)
         return timeobs
 
     # evals a metric of Res of all ROIs (the LOWER, the better)
@@ -103,8 +107,23 @@ class oplan():
         observer = DataManager.getInstance().getObserver()
         instrument = DataManager.getInstance().getInstrumentData()
         #print(i)
-        _, _, res = roiL[i].interpolateObservationData(et)
+        if roiL[i].mosaic:
+            _, _, res, _ = roiL[i].interpolateObservationData(et)
+        else:
+            _, _, res = roiL[i].interpolateObservationData(et)
+
         return res  # pointres(instrument.ifov, roiL[i].centroid, et, roiL[i].body, observer)
+
+    def evalCovPlan(self):
+        roiL = DataManager.getInstance().getROIList()
+        for i in range(len(self.stol)):
+            self.croi[i] = self.evalCovRoi(i, self.stol[i])
+        return self.croi
+
+    def evalCovRoi(self, i, et):  # returns instantaneous resolution (fitness) of roi (integer)
+        roiL = DataManager.getInstance().getROIList(self.subproblem[0], self.subproblem[1])
+        _, _, _, cov = roiL[i].interpolateObservationData(et)
+        return cov
 
     # returns the total overlap time, defined as the sum of the overlaps between consecutive observations
     # overlaps of more that two observations are not considered
@@ -143,7 +162,9 @@ class oplan():
         tov = self.getTotalOverlapTime()
         if tov > 0:
             return tov * 1e9
-        return np.mean(self.evalResPlan())
+        w1 = 0.5
+        w2 = 0.5
+        return w1 * np.mean(self.evalResPlan()) + w2 * np.mean(np.ones(len(self.stol))*100 - self.evalCovPlan())
 
 
     def uniformRandomInTw(self, roi):

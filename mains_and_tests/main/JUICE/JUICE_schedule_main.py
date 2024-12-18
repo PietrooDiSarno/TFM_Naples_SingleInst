@@ -164,20 +164,28 @@ DB = ROIDataBase(ROIs_filename, target_body)
 roinames = DB.getnames()  # or rois = [customROI1, customROI2...] List of rois as objects of class oPlanRoi. roiDataBase internally creates each instance of the oPlanRois for each desiredRoi
 rois = DB.getROIs()
 roiL = []
+obsCov = False
 for name in roinames:
     patron = f"pickle_{name}.cfg"
     for file in os.listdir("../../../data/roi_files"):
         if file == patron:
             with open('../../../data/roi_files/pickle_' + name + '.cfg', "rb") as f:
-                s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
+                try:
+                    s, e, obsET, obsLen, obsImg, obsRes, obsCov = pickle.load(f)
+                except:
+                    s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
                 tw = stypes.SPICEDOUBLE_CELL(2000)
                 for i in range(len(s)):
                     spice.wninsd(s[i], e[i], tw)
                 for j in range(len(rois)):
                     if rois[j].name == name:
-                        rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes, mosaic = True)
-                        roiL.append(rois[j])
-                        continue
+                        if obsCov:
+                            rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes,
+                                                                  cov=obsCov, mosaic=True)
+                            continue
+                        else:
+                            rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes)
+                            continue
 
 DataManager(roiL, instrument, observer)
 #print(print_tw(rois[0].ROI_TW))
