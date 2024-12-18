@@ -2,8 +2,11 @@ import matplotlib.pyplot as plt
 import os
 import pickle
 import numpy as np
+from matplotlib import patches
 from pySPICElib import etToAxisStrings
 from pySPICElib.kernelFetch import kernelFetch
+import spiceypy as spice
+from spiceypy.utils.support_types import SPICEDOUBLE_CELL
 
 """
 plot of the precomputed resolution in time for a given ROI
@@ -137,20 +140,45 @@ ROIs_filename = "../../data/roi_info/ganymede_roi_info.txt"  # Can be a list of 
 roinames = ['JUICE_ROI_GAN_5_0_09']
 for name in roinames:
     patron = f"pickle_{name}.cfg"
-    for file in os.listdir("../../data/roi_files"):
+    for file in os.listdir("../../data/roi_files/roi_largerflyby"):
         if file == patron:
-            with open('../../data/roi_files/pickle_' + name + '.cfg', "rb") as f:
-                _, _, obsET, _, _, obsRes = pickle.load(f)
-                obsET = np.concatenate(obsET)
-                obsRes = np.concatenate(obsRes)
-                minRes = min(obsRes)
-                minET = obsET[np.argmin(obsRes)]
+            with open('../../data/roi_files/roi_largerflyby/pickle_' + name + '.cfg', "rb") as f:
+                s, e, obsET, _, _, obsRes = pickle.load(f)
+                obsET_ = np.concatenate(obsET)
+                obsRes_ = np.concatenate(obsRes)
+                minRes = min(obsRes_)
+                minET = obsET_[np.argmin(obsRes_)]
+                tw = SPICEDOUBLE_CELL(2000)
+                tw2 = SPICEDOUBLE_CELL(2000)
+                spice.wninsd(float(obsET_[0]), float(obsET_[-1]), tw2)
+                for i in range(len(s)):
+                    spice.wninsd(s[i], e[i], tw)
+                tw2 = spice.wndifd(tw2, tw)
                 fig, ax = plt.subplots()
-                ax.plot(obsET, obsRes, '-', color = 'r', label = 'Resolution')
-                ax.plot(minET, minRes, marker = 'x', color = 'blue', markersize = 8, label = 'Minimum')
+
+                nint = spice.wncard(tw)
+                for i in range(nint):
+                    intbeg, intend = spice.wnfetd(tw, i)
+                    intbeg = intbeg - 0
+                    intend = intend - 0
+                    if i == 0:
+                        ax.add_patch(patches.Rectangle((intbeg, 0), width=intend - intbeg, height=100 - 0, lw=1,
+                                               color ='lightskyblue' , fill=True, alpha = 0.3, label = 'compliant interval'))
+                        ax.plot(obsET[i], obsRes[i], '-', color='r', label='Resolution')
+                    else:
+                        ax.add_patch(patches.Rectangle((intbeg, 0), width=intend - intbeg, height=100 - 0, lw=1,
+                                                       color='lightskyblue', fill=True, alpha=0.3))
+                        ax.plot(obsET[i], obsRes[i], '-', color='r')
+
+                nint2 = spice.wncard(tw2)
+                for i in range(nint2):
+                    intbeg, intend = spice.wnfetd(tw2, i)
+                    ax.plot(np.linspace(intbeg, intend, 1000),90 * np.ones(1000), '-', color='r')
+                ax.plot(minET, minRes, marker='x', color='blue', markersize=8, label='Minimum')
                 ax.set_xlabel('Initial observation instant')
                 ax.set_ylabel('Resolution [km/px]')
-                etv, ets = etToAxisStrings(obsET, 15, accurate=True)
+                obsET_ticks = np.linspace(obsET_[0], obsET_[-1], 30)
+                etv, ets = etToAxisStrings(obsET_ticks , 15, accurate=True)
                 ax.set_xticks(etv)
                 ax.set_xticklabels(ets, rotation=15)
                 ax.set_title('Resolution over ' + name)

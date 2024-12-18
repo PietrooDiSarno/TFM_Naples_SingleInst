@@ -1,6 +1,5 @@
 from pySPICElib.kernelFetch import kernelFetch
 from pySPICElib.SPICEtools import *
-
 import spiceypy as spice
 from FuturePackage import Instrument
 from FuturePackage import ROIDataBase
