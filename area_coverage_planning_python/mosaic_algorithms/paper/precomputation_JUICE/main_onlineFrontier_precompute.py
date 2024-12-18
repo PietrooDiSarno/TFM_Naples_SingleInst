@@ -1,6 +1,9 @@
 from area_coverage_planning_python.mosaic_algorithms.auxiliar_functions.multiprocess.dataHandling import dataHandling
 from area_coverage_planning_python.mosaic_algorithms.online_frontier_repair.frontierRepair import frontierRepair
 from area_coverage_planning_python.mosaic_algorithms.auxiliar_functions.spacecraft_operation.computeResMosaic import computeResMosaic
+from mosaic_algorithms.auxiliar_functions.planetary_coverage.roicoverage import roicoverage
+
+
 def mosaicOnlineFrontier(timeint, inst, sc, ROIob, instrument, int):
 
     # Revision of grid discretization:
@@ -19,7 +22,7 @@ def mosaicOnlineFrontier(timeint, inst, sc, ROIob, instrument, int):
     makespan = []
     nImg = []
     resROI = []
-
+    cov = []
 
     roiname = ROIob.name
     roi = ROIob.vertices
@@ -38,10 +41,17 @@ def mosaicOnlineFrontier(timeint, inst, sc, ROIob, instrument, int):
             makespan.append(fpList[-1]['t'] + tcadence - init_time)
             nImg.append(len(fpList))
             resROI.append(computeResMosaic(fpList, instrument.ifov))
+            roi_ = {'vertices': roi}
+            cov_ = roicoverage(target, roi_, fpList)[0]
+            if cov_ > 95:
+                cov.append(100)
+            else:
+                cov.append(cov_)
         else:
             makespan.append(None)
             nImg.append(None)
             resROI.append(None)
+            cov.append(None)
 
 
     return makespan, nImg, resROI, cov
