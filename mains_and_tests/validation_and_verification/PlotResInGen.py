@@ -190,9 +190,9 @@ rois = DB.getROIs()
 roiL = []
 for name in roinames:
     patron = f"pickle_{name}.cfg"
-    for file in os.listdir("../../data/roi_files/roi_largerflyby2"):
+    for file in os.listdir("../../data/roi_files/roi_largerflyby3"):
         if file == patron:
-            with open('../../data/roi_files/roi_largerflyby2/pickle_' + name + '.cfg', "rb") as f:
+            with open('../../data/roi_files/roi_largerflyby3/pickle_' + name + '.cfg', "rb") as f:
                 s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
                 tw = stypes.SPICEDOUBLE_CELL(2000)
                 for i in range(len(s)):

@@ -140,9 +140,9 @@ ROIs_filename = "../../data/roi_info/ganymede_roi_info.txt"  # Can be a list of 
 roinames = ['JUICE_ROI_GAN_5_0_09']
 for name in roinames:
     patron = f"pickle_{name}.cfg"
-    for file in os.listdir("../../data/roi_files/roi_largerflyby2"):
+    for file in os.listdir("../../data/roi_files/roi_largerflyby3"):
         if file == patron:
-            with open('../../data/roi_files/roi_largerflyby2/pickle_' + name + '.cfg', "rb") as f:
+            with open('../../data/roi_files/roi_largerflyby3/pickle_' + name + '.cfg', "rb") as f:
                 s, e, obsET, _, _, obsRes = pickle.load(f)
                 obsET_ = np.concatenate(obsET)
                 obsRes_ = np.concatenate(obsRes)
