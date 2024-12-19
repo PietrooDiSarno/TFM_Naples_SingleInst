@@ -10,6 +10,9 @@ import PMOT as pm
 import os
 import pickle
 
+from conversion_functions import mat2py_et2utc
+
+
 class agaplot(aga):
     def run(self, ng=10, goal=-1e7, maxFitEval=None):
         print('AGA vanilla run') if self.options['info'] > 0 else None
@@ -206,9 +209,11 @@ for name in roinames:
                         if obsCov:
                             rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes,
                                                                   cov=obsCov, mosaic=True)
+                            roiL.append(rois[j])
                             continue
                         else:
                             rois[j].initializeObservationDataBase(roitw=tw, timeData=obsLen, nImg=obsImg, res=obsRes)
+                            roiL.append(rois[j])
                             continue
 
 DataManager(roiL, instrument, observer)
@@ -231,12 +236,20 @@ myaga.setOption('nd', 0)
 myaga.setOption('nm', myaga.getPopSize() - 20)
 myaga.setOption('info', 1)
 
-bestI, bestF, type, g, bestFitList = myaga.run(20)
+bestI, bestF, type, g, bestFitList = myaga.run(500)
 
 fig, ax = plt.subplots()
 ax.plot(list(range(g + 1)), bestFitList, '.', color='r', linestyle = 'none', markersize = 3)
-ax.set_xticks(list(range(g + 1)))
+#ax.set_xticks(list(range(g + 1)))
+ax.set_xticks(np.linspace(0,g,21, endpoint = True ))
 ax.set_xlabel('Generation')
-ax.set_ylabel('Best fitness [km/px]')
+ax.set_ylabel('Best fitness')
 ax.set_title('Fitness evolution')
 plt.show()
+
+nImgs = bestI.nImgPlan()
+for i in range(len(bestI.stol)):
+    start = mat2py_et2utc(bestI.stol[i], 'C', 0)
+    end = mat2py_et2utc(bestI.stol[i] + bestI.obsLength[i], 'C', 0)
+    print('ROI: ', roiL[i].name,'from: ', start, 'to', end, 'nImg:', nImgs[i], 'res:', bestI.qroi[i],'cov:', bestI.croi[i])
+print(i)
