@@ -190,7 +190,7 @@ class oplan():
             return tov * 1e9
         w1 = 0.5
         w2 = 0.5
-        return w1 * ((np.mean(self.evalResPlan()) - min_res)/(max_res - min_res)) + w2 * (1 - 1/100 * np.mean(self.evalCovPlan()))
+        return w1 * ((np.mean(self.evalResPlan()) - min_res)/(max_res - min_res)) + w2 * (1. - 1/100 * np.mean(self.evalCovPlan()))
 
 
     def uniformRandomInTw(self, roi):
