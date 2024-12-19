@@ -21,7 +21,7 @@ import numpy as np
 # The function spice.et2utc in Python gives as output:
 # - utcstr:ndarray or str
 
-def mat2py_et2utc(et,format,prec):
+def mat2py_et2utc(et, format, prec):
 
     if isinstance(format,list):
         format=format[0]
