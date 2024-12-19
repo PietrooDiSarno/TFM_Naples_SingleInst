@@ -190,9 +190,9 @@ rois = DB.getROIs()
 roiL = []
 for name in roinames:
     patron = f"pickle_{name}.cfg"
-    for file in os.listdir("../../data/roi_files/roi_largerflyby3"):
+    for file in os.listdir("../../data/roi_files/roi_onlyemission"):
         if file == patron:
-            with open('../../data/roi_files/roi_largerflyby3/pickle_' + name + '.cfg', "rb") as f:
+            with open('../../data/roi_files/roi_onlyemission/pickle_' + name + '.cfg', "rb") as f:
                 s, e, obsET, obsLen, obsImg, obsRes = pickle.load(f)
                 tw = stypes.SPICEDOUBLE_CELL(2000)
                 for i in range(len(s)):
@@ -223,11 +223,11 @@ myaga.setOption('nd', 0)
 myaga.setOption('nm', myaga.getPopSize() - 20)
 myaga.setOption('info', 1)
 
-bestI, bestF, type, g, bestFitList = myaga.run(20)
-
+bestI, bestF, type, g, bestFitList = myaga.run(500)
+print('BEST INDIVIDUAL:\nResolution:', bestF,'Starting instant:', spice.et2utc(bestI.stol[0], 'C', 0))
 fig, ax = plt.subplots()
 ax.plot(list(range(g + 1)), bestFitList, '.', color='r', linestyle = 'none', markersize = 3)
-ax.set_xticks(list(range(g + 1)))
+ax.set_xticks(np.linspace(0, g, 21, endpoint = True))
 ax.set_xlabel('Generation')
 ax.set_ylabel('Best fitness [km/px]')
 ax.set_title('Fitness evolution')
