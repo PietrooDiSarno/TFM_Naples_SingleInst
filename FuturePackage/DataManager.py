@@ -1,7 +1,5 @@
 import copy
-from sys import getsizeof
-import tracemalloc
-
+import numpy as np
 
 # PONER COMENTARIOS
 class DataManager:
@@ -21,8 +19,12 @@ class DataManager:
             self.roiList = roiL
             self.instrument = instrumentData
             self.observer = observer
+            self.maxRes = None
+            self.minRes = None
+            self.getMaxMinRes()
             DataManager.__lock = True
         DataManager.__instance = self
+
 
     def getROIList(self,s = None, e = None):
         if s is None:
@@ -30,6 +32,19 @@ class DataManager:
         else:
             return self.roiList[s:e+1]
 
+    def getMaxMinRes(self):
+        if self.maxRes == None or self.minRes == None:
+            min_res = np.inf
+            max_res = - np.inf
+            for roi in self.roiList:
+                min_res_roi = min(np.concatenate(roi.ROI_ObsRes))
+                max_res_roi = max(np.concatenate(roi.ROI_ObsRes))
+                if min_res_roi < min_res: min_res = copy.deepcopy(min_res_roi)
+                if max_res_roi > max_res: max_res = copy.deepcopy(max_res_roi)
+            self.minRes = copy.deepcopy(min_res)
+            self.maxRes = copy.deepcopy(max_res)
+        else:
+            return self.maxRes, self.minRes
     def getSingleROI(self, i):
         return self.roiList[i]
 
