@@ -10,6 +10,7 @@ import PMOT as pm
 import os
 import pickle
 
+from conversion_functions import mat2py_et2utc
 from mains_and_tests.plot.plotSchedule import plotSchedule
 
 #################################################################################################################
@@ -214,7 +215,7 @@ myaga.setOption('nd', 0)
 myaga.setOption('nm', myaga.getPopSize() - 20)
 myaga.setOption('info', 1)
 
-bestI, bestF, type, g = myaga.run(20)
+bestI, bestF, type, g = myaga.run(200)
 flybys = [["2033 NOV 26 18:22:11", "2033 NOV 27 18:22:11"],
           ["2034 JAN 14 06:38:51", "2034 JAN 15 06:38:51"],
           ["2034 JUN 05 18:53:51", "2034 JUN 06 18:53:51"],
@@ -222,4 +223,10 @@ flybys = [["2033 NOV 26 18:22:11", "2033 NOV 27 18:22:11"],
           ["2034 SEP 07 06:03:51", "2034 SEP 08 06:03:51"],
           ["2034 SEP 28 18:48:51", "2034 SEP 29 18:48:51"],
           ["2034 NOV 18 09:58:51", "2034 NOV 19 09:58:51"]]
+for i in range(len(bestI.stol)):
+    start = mat2py_et2utc(bestI.stol[i], 'C', 0)
+    end = mat2py_et2utc(bestI.stol[i] + bestI.obsLength[i], 'C', 0)
+    print('ROI: ', roiL[i].name,'from: ', start, 'to', end)
+print(i)
+
 #plotSchedule(bestI, roiL, flybys)
