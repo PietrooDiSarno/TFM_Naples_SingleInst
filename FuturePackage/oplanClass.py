@@ -1,4 +1,7 @@
+import copy
 import random
+
+from matplotlib.pyplot import inferno
 from pySPICElib.SPICEtools import *
 from PSOA.pointres import pointres
 
@@ -80,6 +83,21 @@ class oplan():
             _, timeobs, _ = roi.interpolateObservationData(et, interval)
         return timeobs
 
+    def getObsNumImg(self, roi, et):
+        interval, _, _ = self.findIntervalInTw(et, roi.ROI_TW)
+
+        if roi.mosaic:
+            nImg, _, _, _ = roi.interpolateObservationData(et, interval)
+        else:
+            nImg, _, _ = roi.interpolateObservationData(et, interval)
+        return nImg
+
+    def nImgPlan(self):
+        roiL = DataManager.getInstance().getROIList()
+        nImgs = []
+        for i in range(len(roiL)):
+            nImgs.append(self.getObsNumImg(roiL[i], self.stol[i]))
+        return np.array(nImgs)
     # evals a metric of Res of all ROIs (the LOWER, the better)
     # in this case, averaged centroid res. in km/pix
 
@@ -159,12 +177,20 @@ class oplan():
             self.obsLength[i] = obslen
 
     def fitFun(self):
+        roiL = DataManager.getInstance().getROIList(self.subproblem[0], self.subproblem[1])
         tov = self.getTotalOverlapTime()
+        min_res = np.inf
+        max_res = - np.inf
+        for roi in roiL:
+            min_res_roi = min(np.concatenate(roi.ROI_ObsRes))
+            max_res_roi = max(np.concatenate(roi.ROI_ObsRes))
+            if min_res_roi < min_res: min_res = copy.deepcopy(min_res_roi)
+            if max_res_roi > max_res: max_res = copy.deepcopy(max_res_roi)
         if tov > 0:
             return tov * 1e9
         w1 = 0.5
         w2 = 0.5
-        return w1 * np.mean(self.evalResPlan()) + w2 * np.mean(np.ones(len(self.stol))*100 - self.evalCovPlan())
+        return w1 * ((np.mean(self.evalResPlan()) - min_res)/(max_res - min_res)) + w2 * (1 - 1/100 * np.mean(self.evalCovPlan()))
 
 
     def uniformRandomInTw(self, roi):
