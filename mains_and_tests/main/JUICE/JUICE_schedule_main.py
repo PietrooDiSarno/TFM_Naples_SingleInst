@@ -9,13 +9,15 @@ from FuturePackage import oplan
 import PMOT as pm
 import os
 import pickle
+import random
 
 from conversion_functions import mat2py_et2utc
 from mains_and_tests.plot.plotSchedule import plotSchedule
 
 #################################################################################################################
 
-
+np.random.seed(1234)
+random.seed(1234)
 #################################################################################################################
 METAKR = ['https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crema_5_1_150lb_23_1_default_v01.bc',
           'https://spiftp.esac.esa.int/data/SPICE/JUICE/kernels/ck/juice_sc_crema_5_1_150lb_23_1_comms_v01.bc',
@@ -209,10 +211,10 @@ print(plan1.obsLength)
 print(plan1.fitFun())
 
 myaga = pm.aga(plan1, 100)
-myaga.setOption('ne', 5)
-myaga.setOption('cCanMutate', 20)
-myaga.setOption('nd', 0)
-myaga.setOption('nm', myaga.getPopSize() - 20)
+myaga.setOption('ne', int(0.05 * myaga.getPopSize()))
+myaga.setOption('cCanMutate', int(0.20 * myaga.getPopSize()))
+myaga.setOption('nd', int(0.75 * myaga.getPopSize()))
+myaga.setOption('nm', int(0.15 * myaga.getPopSize()))
 myaga.setOption('info', 1)
 
 bestI, bestF, type, g = myaga.run(200)

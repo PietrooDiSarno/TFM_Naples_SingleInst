@@ -9,9 +9,11 @@ from FuturePackage import oplan
 import PMOT as pm
 import os
 import pickle
+import random
 
 from conversion_functions import mat2py_et2utc
-
+np.random.seed(1234)
+random.seed(1234)
 
 class agaplot(aga):
     def run(self, ng=10, goal=-1e7, maxFitEval=None):
@@ -228,15 +230,23 @@ plan1.ranFun()
 
 plan1.mutFun()
 
-
+"""
 myaga = agaplot(plan1, 100)
 myaga.setOption('ne', 5)
 myaga.setOption('cCanMutate', 20)
 myaga.setOption('nd', 0)
 myaga.setOption('nm', myaga.getPopSize() - 20)
 myaga.setOption('info', 1)
+"""
 
-bestI, bestF, type, g, bestFitList = myaga.run(500)
+myaga = agaplot(plan1, 100)
+myaga.setOption('ne', int(0.05 * myaga.getPopSize()))
+myaga.setOption('cCanMutate', int(0.20 * myaga.getPopSize()))
+myaga.setOption('nd', int(0.75 * myaga.getPopSize()))
+myaga.setOption('nm', int(0.15 * myaga.getPopSize()))
+myaga.setOption('info', 1)
+
+bestI, bestF, type, g, bestFitList = myaga.run(1000)
 
 fig, ax = plt.subplots()
 ax.plot(list(range(g + 1)), bestFitList, '.', color='r', linestyle = 'none', markersize = 3)
