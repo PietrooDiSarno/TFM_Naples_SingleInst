@@ -215,12 +215,12 @@ plan1.ranFun()
 
 plan1.mutFun()
 
-
-myaga = agaplot(plan1, 100)
-myaga.setOption('ne', 5)
-myaga.setOption('cCanMutate', 20)
-myaga.setOption('nd', 0)
-myaga.setOption('nm', myaga.getPopSize() - 20)
+pop = 100
+myaga = agaplot(plan1, pop)
+myaga.setOption('ne', 0.05 * pop)
+myaga.setOption('cCanMutate', 0.20 * pop)
+myaga.setOption('nd', 0.75 * pop)
+myaga.setOption('nm', 0.15 * pop)
 myaga.setOption('info', 1)
 
 bestI, bestF, type, g, bestFitList = myaga.run(500)
