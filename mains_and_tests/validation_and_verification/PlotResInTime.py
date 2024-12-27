@@ -185,4 +185,5 @@ for name in roinames:
                 ax.legend()
                 plt.show()
                 print(minRes)
+                print(minET)
 

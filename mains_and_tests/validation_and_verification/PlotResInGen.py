@@ -224,6 +224,7 @@ myaga.setOption('info', 1)
 
 bestI, bestF, type, g, bestFitList = myaga.run(500)
 print('BEST INDIVIDUAL:\nResolution:', bestF,'Starting instant:', spice.et2utc(bestI.stol[0], 'C', 0))
+print(bestI.stol[0])
 fig, ax = plt.subplots()
 ax.plot(list(range(g + 1)), bestFitList, '.', color='r', linestyle = 'none', markersize = 3)
 ax.set_xticks(np.linspace(0, g, 21, endpoint = True))
