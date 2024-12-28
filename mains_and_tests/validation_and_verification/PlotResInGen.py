@@ -12,8 +12,8 @@ import pickle
 import random
 
 from conversion_functions import mat2py_et2utc
-np.random.seed(1234)
-random.seed(1234)
+#np.random.seed(1234)
+#random.seed(1234)
 
 class agaplot(aga):
     def run(self, ng=10, goal=-1e7, maxFitEval=None):
@@ -259,7 +259,7 @@ plt.show()
 
 nImgs = bestI.nImgPlan()
 for i in range(len(bestI.stol)):
-    start = mat2py_et2utc(bestI.stol[i], 'C', 0)
-    end = mat2py_et2utc(bestI.stol[i] + bestI.obsLength[i], 'C', 0)
+    start = spice.et2utc(bestI.stol[i], 'C', 0)
+    end = spice.et2utc(bestI.stol[i] + bestI.obsLength[i], 'C', 0)
     print('ROI: ', roiL[i].name,'from: ', start, 'to', end, 'nImg:', nImgs[i], 'res:', bestI.qroi[i],'cov:', bestI.croi[i])
 print(i)
