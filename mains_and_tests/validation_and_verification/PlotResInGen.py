@@ -2,6 +2,8 @@ from PMOT.ooaga import aga
 from pySPICElib.kernelFetch import kernelFetch
 from pySPICElib.SPICEtools import *
 import spiceypy as spice
+from spiceypy.utils.support_types import SPICEDOUBLE_CELL
+
 from FuturePackage import Instrument
 from FuturePackage import ROIDataBase
 from FuturePackage import DataManager
@@ -232,3 +234,43 @@ ax.set_xlabel('Generation')
 ax.set_ylabel('Best fitness [km/px]')
 ax.set_title('Fitness evolution')
 plt.show()
+
+
+
+for name in roinames:
+    patron = f"pickle_{name}.cfg"
+    for file in os.listdir("../../data/roi_files/roi_onlyemission"):
+        if file == patron:
+            with open('../../data/roi_files/roi_onlyemission/pickle_' + name + '.cfg', "rb") as f:
+                s, e, obsET, _, _, obsRes = pickle.load(f)
+                obsET_ = np.concatenate(obsET)
+                obsRes_ = np.concatenate(obsRes)
+                minRes = min(obsRes_)
+                minET = obsET_[np.argmin(obsRes_)]
+                tw = SPICEDOUBLE_CELL(2000)
+                for i in range(len(s)):
+                    spice.wninsd(s[i], e[i], tw)
+                nint = spice.wncard(tw)
+                for i in range(nint):
+                    intbeg, intend = spice.wnfetd(tw, i)
+                    fig, ax = plt.subplots()
+                    ax.plot(obsET[i], obsRes[i], color = 'red', label = 'Resolution')
+                    if intbeg <= minET <= intend:
+                        ax.plot(minET, minRes, marker='x', color='blue', markersize=8,
+                                label='Minimum Resolution Point')
+                    if intbeg <= bestI.stol[0] <= intend:
+                        ax.plot(bestI.stol[0], bestF, marker='x', color='green', markersize=8,
+                                label='GA Optimum')
+                    ax.plot(obsET[i], minRes * np.ones(len(obsET[i])), color = 'lightskyblue',
+                            linestyle='--', linewidth=1)
+                    ax.text(obsET[i][800], minRes + 0.15 * minRes, f"min = {minRes:.3f} km/px", ha='center', fontsize=10, color='k')
+                    ax.set_xlabel('Initial observation instant')
+                    ax.set_ylabel('Resolution [km/px]')
+                    ax.set_xlim(obsET[i][0]-0.02 * (obsET[i][-1] - obsET[i][0]), obsET[i][-1] + 0.02 * (obsET[i][-1] - obsET[i][0]))
+                    obsET_ticks = np.linspace(obsET[i][0], obsET[i][-1], 30)
+                    etv, ets = etToAxisStrings(obsET_ticks , 15, accurate=True)
+                    ax.set_xticks(etv)
+                    ax.set_xticklabels(ets, rotation = 15)
+                    ax.set_title('Resolution over ' + name + f' - compliant interval {i+1}')
+                    ax.legend()
+                    plt.show()
