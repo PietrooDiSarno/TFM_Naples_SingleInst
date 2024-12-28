@@ -1,5 +1,6 @@
 import PMOT as pm
 import sys
+import spiceypy as spice
 
 if len(sys.argv) > 1:
     print(sys.argv[1])

@@ -261,3 +261,10 @@ qq.printOptions()
 
 # run
 qq.runADS(nite=GAgen, goal=1e-7)
+bestI = qq.pop[0]
+
+for i in range(len(bestI.stol)):
+    start = spice.et2utc(bestI.stol[i], 'C', 0)
+    end = spice.et2utc(bestI.stol[i] + bestI.obsLength[i], 'C', 0)
+    print('ROI: ', roiL[i].name,'from: ', start, 'to', end)
+print(i)
