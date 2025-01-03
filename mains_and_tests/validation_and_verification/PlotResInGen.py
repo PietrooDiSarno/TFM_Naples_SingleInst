@@ -273,4 +273,12 @@ for name in roinames:
                     ax.set_xticklabels(ets, rotation = 15)
                     ax.set_title('Resolution over ' + name + f' - compliant interval {i+1}')
                     ax.legend()
-                    plt.show()
+                    #plt.show()
+                    plt.tight_layout()
+                    plt.subplots_adjust(left=0.15, right=0.99, top=0.9, bottom=0.15)
+                    homeFolder = os.path.expanduser('~')
+                    dataFolder = os.path.join(homeFolder, 'PlotResSingleIns_OnlyRes')
+                    if not os.path.isdir(dataFolder):
+                        os.makedirs(dataFolder, exist_ok=True)
+                    plt.savefig(f'{dataFolder}/Resolution_{i+1}')
+                    plt.close()
