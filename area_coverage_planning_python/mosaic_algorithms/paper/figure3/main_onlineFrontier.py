@@ -1,9 +1,14 @@
 import copy
+
+from mosaic_algorithms.auxiliar_functions.planetary_coverage.roicoverage import roicoverage
 from mosaic_algorithms.online_frontier_repair.frontierRepair import frontierRepair
 from mosaic_algorithms.auxiliar_functions.plot.plotTour import plotTour
-from mosaic_algorithms.paper.figure3.input_data_fig3 import *  # Load mission info (kernels, SPICE ids, etc.)
+#from mosaic_algorithms.paper.figure3.input_data_fig3 import *  # Load mission info (kernels, SPICE ids, etc.)
+from mosaic_algorithms.paper.figure3.input_data_juice import *
 import matplotlib.pyplot as plt
 import importlib
+from mosaic_algorithms.paper.figure3.post_process_galileoregio import post_process_galileoregio
+from mosaic_algorithms.auxiliar_functions.spacecraft_operation.computeResMosaic import computeResMosaic
 
 # Revision of grid discretization:
 # Grid is going to be built in the camera frame, instead of the body-fixed
@@ -44,7 +49,7 @@ try:
     # FOM post-process
     exec(open(f"{name}.py").read())
 
-    post_process_fig3(roistruct,mosaic)
+    post_process_galileoregio(roistruct,mosaic)
 except:
     figpath = '.'
     plt.gcf().set_size_inches(9.7,6)
