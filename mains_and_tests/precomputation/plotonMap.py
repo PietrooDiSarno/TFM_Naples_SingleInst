@@ -9,7 +9,7 @@ from pySPICElib.SPICEtools import newTimeWindow
 
 
 def plotonMap(matrix, rois, fbs):
-    myimage = '../../../data/mosaics/Ganymede_mosaic.jpg'
+    myimage = '../../data/mosaics/Ganymede_mosaic.jpg'
     minPos = []
     for row in matrix:
         row = [999 if math.isnan(x) else x for x in row]
@@ -19,7 +19,9 @@ def plotonMap(matrix, rois, fbs):
         ggtlon = []
         ggtlat = []
         fig, ax = plt.subplots()
-        et0, et1 = fbs[fb]
+        t0, t1 = fbs[fb]
+        et0 = spice.str2et(t0)
+        et1 = spice.str2et(t1)
         et = np.linspace(et0, et1, 500)
         dates = [spice.et2utc(et0,'C',0), spice.et2utc(et1,'C',0)]
         for t in et:

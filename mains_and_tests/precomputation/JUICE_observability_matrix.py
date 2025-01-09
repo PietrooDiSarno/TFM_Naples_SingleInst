@@ -209,4 +209,4 @@ plt.ylabel('ROI')
 plt.show()
 
 
-plotonMap(globalMat, rois)
+plotonMap(globalMat, rois, flybys)
