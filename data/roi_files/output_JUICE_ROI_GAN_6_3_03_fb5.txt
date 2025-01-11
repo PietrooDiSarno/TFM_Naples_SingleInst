@@ -1,6 +1,6 @@
 name =JUICE_ROI_GAN_6_3_03
 flyby = ['2034 SEP 28 18:48:51', '2034 SEP 29 18:48:51']
-Observation TW = <SpiceCell dtype = 1, length = 0, size = 3200, card = 12, is_set = 1, adjust = 0, init = 1, base = 94872018727680, data = 94872018727728>
+Observation TW = <SpiceCell dtype = 1, length = 0, size = 3200, card = 12, is_set = 1, adjust = 0, init = 1, base = 94133616639056, data = 94133616639104>
 Res(t) = [1.42305189 1.42340432 1.42375687 1.42410954 1.42446232 1.42481521
  1.42516822 1.42552134 1.42587457 1.42622791 1.42658137 1.42693493
  1.42728861 1.42764239 1.42799629 1.42835029 1.4287044  1.42905862
