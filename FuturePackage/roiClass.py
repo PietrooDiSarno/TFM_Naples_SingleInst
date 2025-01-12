@@ -32,6 +32,8 @@ class oPlanRoi(roi):
         self.ROI_ObsRes = res
         if self.mosaic:
             self.ROI_ObsCov = cov
+            aux = copy.deepcopy(self.ROI_ObsCov)
+            self.ROI_ObsCov = [np.array([100 if x == 0 else x for x in array]) for array in aux]
 
     def computeObservationET(self):
         et_list = []
