@@ -239,14 +239,14 @@ myaga.setOption('nm', myaga.getPopSize() - 20)
 myaga.setOption('info', 1)
 """
 
-myaga = agaplot(plan1, 100)
+myaga = agaplot(plan1, 500)
 myaga.setOption('ne', int(0.05 * myaga.getPopSize()))
 myaga.setOption('cCanMutate', int(0.20 * myaga.getPopSize()))
 myaga.setOption('nd', int(0.75 * myaga.getPopSize()))
 myaga.setOption('nm', int(0.15 * myaga.getPopSize()))
 myaga.setOption('info', 1)
 
-bestI, bestF, type, g, bestFitList = myaga.run(1000)
+bestI, bestF, type, g, bestFitList = myaga.run(300)
 
 fig, ax = plt.subplots()
 ax.plot(list(range(g + 1)), bestFitList, '.', color='r', linestyle = 'none', markersize = 3)
