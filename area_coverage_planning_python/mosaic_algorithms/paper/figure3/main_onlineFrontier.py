@@ -7,7 +7,6 @@ from mosaic_algorithms.auxiliar_functions.plot.plotTour import plotTour
 from mosaic_algorithms.paper.figure3.input_data_juice import *
 import matplotlib.pyplot as plt
 import importlib
-from mosaic_algorithms.paper.figure3.post_process_galileoregio import post_process_galileoregio
 from mosaic_algorithms.auxiliar_functions.spacecraft_operation.computeResMosaic import computeResMosaic
 
 # Revision of grid discretization:
@@ -48,8 +47,8 @@ try:
     module = importlib.import_module(module_name)
     # FOM post-process
     exec(open(f"{name}.py").read())
+    post_process_fig3(roistruct, mosaic)
 
-    post_process_galileoregio(roistruct,mosaic)
 except:
     figpath = '.'
     plt.gcf().set_size_inches(9.7,6)

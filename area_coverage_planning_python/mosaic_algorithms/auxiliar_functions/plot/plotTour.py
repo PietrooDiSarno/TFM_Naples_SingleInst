@@ -7,6 +7,7 @@ from mosaic_algorithms.auxiliar_functions.polygon_functions.amsplit import amspl
 
 
 def plotTour(tour, fplist, roistruct, sc, target, *args):
+
     # Pre-allocate variables
     filename = f"../../auxiliar_functions/plot/global-maps/{target.lower()}-map.jpg"
     c1 = (0.72, 0.27, 1.00)
@@ -148,13 +149,14 @@ def plotTour(tour, fplist, roistruct, sc, target, *args):
                 handles.append(h5[0])
                 labels.append(roistruct[i]['name'])
    #plt.pause(0.5)
-    # Legend
-
+    # Legend commented for the video
+    """
     unique_labels = dict(zip(labels, handles))
     legend = ax.legend(handles=unique_labels.values(), labels=unique_labels.keys(), loc='best', frameon=True)
     legend.get_frame().set_facecolor('white')
     legend.get_frame().set_alpha(1)
-    plt.pause(3)
+    """
+    #plt.pause(3) commentend for the video
     if video is not None:
         video.finish()
 

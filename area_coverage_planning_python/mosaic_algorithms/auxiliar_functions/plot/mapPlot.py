@@ -53,5 +53,5 @@ def mapPlot(filename):
     ax.tick_params(axis = 'x', which = 'major', pad = 10)
     ax.tick_params(axis = 'y', which = 'major', pad = 10)
     ax.tick_params(labelsize=20)
-    plt.pause(0.1)
+    #plt.pause(0.1) commented for the video
     return fig, ax
