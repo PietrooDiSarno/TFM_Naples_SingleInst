@@ -1,5 +1,6 @@
 import copy
 import os
+import re
 import pickle
 
 
@@ -20,6 +21,8 @@ module_name = f"mosaic_algorithms.paper.video.{name}"
 folder = 'pickles_video'
 for index, patron in enumerate(os.listdir(folder)):
     with open(f'{folder}/{patron}','rb') as f:
+        match = re.search(r'pickle_selket_(\d+)\.cfg', patron)
+        X = int(match.group(1))
         A, fpList = pickle.load(f)
         # Plot tour
         ax = plotTour(A, fpList, roistruct, sc, target)
@@ -44,5 +47,5 @@ for index, patron in enumerate(os.listdir(folder)):
         module = importlib.import_module(module_name)
         # FOM post-process
         exec(open(f"{name}.py").read())
-        post_process_fig3(roistruct, mosaic, index)
+        post_process_fig3(roistruct, mosaic, X)
 
