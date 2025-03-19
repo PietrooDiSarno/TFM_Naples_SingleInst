@@ -197,6 +197,7 @@ plt.gca().set_facecolor('grey')
 plt.grid(False)
 plt.gca().set_yticklabels(names1, rotation=0)
 plt.xlabel('Flyby number')
+plt.ylabel('ROI')
 plt.show()
 
 plt.figure(figsize=(cols, rows - mid_index))
