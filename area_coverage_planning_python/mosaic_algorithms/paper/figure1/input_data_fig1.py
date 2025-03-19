@@ -1,7 +1,7 @@
 import numpy as np
 from conversion_functions import *
 from shapely.geometry import Polygon
-from pySPICElib import *
+from pySPICElib.kernelFetch import kernelFetch
 
 # Mosaic comparison between the different heuristics
 
